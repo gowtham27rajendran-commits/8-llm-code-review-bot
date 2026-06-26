@@ -1,9 +1,4 @@
-"""
-LLM Code Reviewer — Core Engine
 
-Parses GitHub diffs and sends changed code to Claude for review.
-Returns structured comments with line numbers for inline GitHub posting.
-"""
 import re
 import json
 import httpx
