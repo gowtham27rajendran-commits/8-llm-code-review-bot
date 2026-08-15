@@ -20,10 +20,10 @@ class DiffHunk:
 class ReviewComment:
     filename: str
     line: int
-    severity: str       # critical / warning / suggestion / praise
-    category: str       # bug / security / performance / readability / positive
+    severity: str      
+    category: str       
     message: str
-    suggestion: Optional[str] = None   # suggested fix
+    suggestion: Optional[str] = None   
 
 
 REVIEW_SYSTEM_PROMPT = """You are an expert code reviewer. Analyze the provided code diff and identify:
@@ -116,7 +116,7 @@ class DiffParser:
                     language=self.get_language(filename),
                     start_line=start_line,
                     code=code,
-                    patch=patch[:3000]  # truncate large diffs
+                    patch=patch[:3000]
                 ))
 
         return hunks
@@ -142,7 +142,7 @@ class SecretScanner:
             for match in matches:
                 findings.append({
                     "type": name,
-                    "match": match.group()[:20] + "...",  # truncate for safety
+                    "match": match.group()[:20] + "...", 
                     "position": match.start()
                 })
         return findings
@@ -175,7 +175,6 @@ class LLMReviewer:
             for s in secrets
         ]
 
-        # LLM review
         user_prompt = f"""Review this {hunk.language} code diff from file `{hunk.filename}` (starts at line {hunk.start_line}):
 
 ```{hunk.language}
@@ -230,7 +229,7 @@ Lines start at {hunk.start_line}. Return JSON only."""
         if not hunks:
             return []
 
-        # Review up to 20 files concurrently (cap cost + latency)
+        
         tasks = [self.review_hunk(hunk) for hunk in hunks[:20]]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
